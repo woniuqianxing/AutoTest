@@ -20,11 +20,13 @@ import java.util.Objects;
 /**
  * 入口
  */
+//日志
 @Log4j
 @RestController
 @Api(value = "v1",description = "用户管理系统")
 @RequestMapping("v1")
 public class UserManager {
+    //接口访问方法
 
     @Autowired
     private SqlSessionTemplate template;
@@ -32,6 +34,7 @@ public class UserManager {
     @ApiOperation(value = "登录接口",httpMethod = "POST")
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public Boolean login(HttpServletResponse response, @RequestBody User user){
+        //查询数据库中是不是有这个用户
         int i = template.selectOne("login",user);
         Cookie cookie = new Cookie("login","true");
         response.addCookie(cookie);

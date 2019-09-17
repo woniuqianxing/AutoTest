@@ -42,7 +42,7 @@
 
     <!--更新/删除用户信息-->
     <update id="updateUserInfo" parameterType="com.course.model.User">
-        update user
+        update user set
         <trim prefixOverrides="SET" suffixOverrides=",">
             <if test="null != userName and '' != userName">
                 userName=#{userName},
@@ -60,5 +60,6 @@
                 isDelete=#{isDelete},
             </if>
         </trim>
+        where id =#{id}
     </update>
 </mapper>
