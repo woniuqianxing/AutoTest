@@ -22,23 +22,26 @@ public class AddUserTest {
 
     //必须依赖登录成功
     @Test(dependsOnGroups = "loginTrue",description = "添加用户接口测试")
-    public void addUser() throws IOException {
+    public void addUser() throws IOException, InterruptedException {
         SqlSession session = DatabaseUtil.getSqlSession();
         AddUserCase addUserCase=session.selectOne("addUserCase",1);
-        //看下
         System.out.println(addUserCase.toString());
         //验证测试地址有没有取出来
         System.out.println(TestConfig.addUserUrl);
 
+        //下面的代码为写完接口的测试代码
         //发请求，获取结果
         String result = getResult(addUserCase);
         //验证返回结果
+        Thread.sleep(3000);
         User user = session.selectOne("addUser",addUserCase);
         System.out.println(user.toString());
+        //结果判断
         Assert.assertEquals(addUserCase.getExpected(),result);
     }
 
     private String getResult(AddUserCase addUserCase) throws IOException {
+        //httppost发请求的方法
         HttpPost post = new HttpPost(TestConfig.addUserUrl);
         JSONObject param = new JSONObject();
         param.put("userName",addUserCase.getUserName());
@@ -49,7 +52,7 @@ public class AddUserTest {
         param.put("isDelete",addUserCase.getIsDelete());
 
         //设置头信息
-        post.setHeader("content-type","application/json");
+        post.setHeader("Content-Type","application/json");
         StringEntity entity = new StringEntity(param.toString(),"utf-8");
         post.setEntity(entity);
 

@@ -4,7 +4,6 @@ import com.course.config.TestConfig;
 import com.course.model.GetUserListCase;
 import com.course.model.User;
 import com.course.utils.DatabaseUtil;
-import com.mongodb.util.JSON;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -17,7 +16,6 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.List;
-
 public class GetUserInfoListTest {
     @Test(dependsOnGroups = "loginTrue",description = "获取性别为男的用户信息")
     public void getUserListInfo() throws IOException {
@@ -31,7 +29,7 @@ public class GetUserInfoListTest {
         //验证
         List<User> userList = session.selectList(getUserListCase.getExpected(),getUserListCase);
         for (User u : userList){
-            System.out.println("获取的user:"+u.toString());
+            System.out.println("list获取的user:"+u.toString());
         }
         JSONArray userListJson = new JSONArray(userList);
         Assert.assertEquals(userListJson.length(),resultJson.length());
@@ -49,7 +47,7 @@ public class GetUserInfoListTest {
         param.put("sex",getUserListCase.getSex());
         param.put("age",getUserListCase.getAge());
 
-        post.setHeader("content-type","application/json");
+        post.setHeader("Content-Type","application/json");
         StringEntity entity = new StringEntity(param.toString(),"utf-8");
         post.setEntity(entity);
 
@@ -59,6 +57,7 @@ public class GetUserInfoListTest {
 
         result = EntityUtils.toString(response.getEntity(),"utf-8");
         JSONArray jsonArray = new JSONArray(result);
+        System.out.println("调用接口list result:"+result);
         return jsonArray;
     }
 }

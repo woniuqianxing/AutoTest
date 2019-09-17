@@ -17,7 +17,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class LoginTest {
 
@@ -35,7 +34,21 @@ public class LoginTest {
     @Test(groups = "loginTrue",description = "用户登录成功接口测试")
     public void loginTrue() throws IOException {
         SqlSession session = DatabaseUtil.getSqlSession();
-        LoginCase loginCase = session.selectOne("loginCase", 1);
+        LoginCase loginCase = session.selectOne("loginCase",2);
+        System.out.println(loginCase.toString());
+        System.out.println(TestConfig.loginUrl);
+
+        //第一步就是发送请求
+        String result = getResult(loginCase);
+        //验证结果
+        Assert.assertEquals(loginCase.getExpected(),result);
+    }
+
+
+    @Test(groups = "loginFalse",description = "用户登录失败接口测试")
+    public void loginFalse() throws IOException{
+        SqlSession session = DatabaseUtil.getSqlSession();
+        LoginCase loginCase = session.selectOne("loginCase", 2);
         System.out.println(loginCase.toString());
         System.out.println(TestConfig.loginUrl);
 
@@ -51,7 +64,7 @@ public class LoginTest {
         param.put("userName",loginCase.getUserName());
         param.put("password",loginCase.getPassword());
 
-        post.setHeader("content-type","aplication/json");
+        post.setHeader("Content-Type","application/json");
 
         StringEntity entity = new StringEntity(param.toString(),"utf-8");
         post.setEntity(entity);
@@ -63,16 +76,4 @@ public class LoginTest {
         return result;
     }
 
-    @Test(groups = "loginFalse",description = "用户登录失败接口测试")
-    public void loginFalse() throws IOException{
-        SqlSession session = DatabaseUtil.getSqlSession();
-        LoginCase loginCase = session.selectOne("loginCase", 2);
-        System.out.println(loginCase.toString());
-        System.out.println(TestConfig.loginUrl);
-
-        //第一步就是发送请求
-        String result = getResult(loginCase);
-        //验证结果
-        Assert.assertEquals(loginCase.getExpected(),result);
-    }
 }
